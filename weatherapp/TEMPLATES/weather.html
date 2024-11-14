@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Weather ForeCast</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Get Weather</button>
+        </form>
+
+        <!-- Current Weather Data -->
+        {% if weather_data %}
+            {% if weather_data.error %}
+                <div class="alert alert-danger mt-3">{{ weather_data.error }}</div>
+            {% else %}
+                <div class="card mt-3">
+                    <h5 class="card-header">{{ weather_data.city }}</h5>
+                    <div class="card-body">
+                        <p>Temperature: {{ weather_data.temperature }}°C</p>
+                        <p>Description: {{ weather_data.description }}</p>
+                        <img src="http://openweathermap.org/img/wn/{{ weather_data.icon }}@2x.png" alt="weather icon">
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- 5-Day Forecast -->
+        {% if forecast_data %}
+            <h3 class="mt-4">5-Day Forecast</h3>
+            <div class="row">
+                {% for forecast in forecast_data %}
+                    <div class="col-md-2">
+                        <div class="card text-center mt-2">
+                            <p>{{ forecast.dt_txt }}</p>
+                            <img src="http://openweathermap.org/img/wn/{{ forecast.weather.0.icon }}@2x.png" alt="forecast icon">
+                            <p>{{ forecast.main.temp }}°C</p>
+                            <p>{{ forecast.weather.0.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Past Searches -->
+        <h3 class="mt-4">Recent Searches</h3>
+        <ul>
+            {% for search in past_searches %}
+                <li>{{ search.city }} ({{ search.timestamp }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+
+
+
+
+
+    
+</body>
+</html>
